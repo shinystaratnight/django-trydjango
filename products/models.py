@@ -9,5 +9,5 @@ class Product(models.Model):
     featured = models.BooleanField(default=False)
 
     def get_absolute_url(self):
-        return '/products/{{ self.id }}/'
+        return f"/products/{self.id}"
 

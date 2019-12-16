@@ -6,15 +6,20 @@ from .models import Course
 
 # BASE VIEW Class = VIEW
 
-class CourseDeleteView(View):
-    template_name = "courses/course_delete.html"
+class CourseObjectMixin(object):
+    model = Course
+    lookup = 'id'
+
     def get_object(self):
-        id = self.kwargs.get("id")
+        id = self.kwargs.get(self.lookup)
         obj = None
         if id is not None:
-            obj = get_object_or_404(Course, id=id)
+            obj = get_object_or_404(self.model, id=id)
         return obj
 
+class CourseDeleteView(CourseObjectMixin, View):
+    template_name = "courses/course_delete.html"
+    
     def get(self, request, *args, **kwargs):
         # GET method
         context = {}
@@ -33,15 +38,8 @@ class CourseDeleteView(View):
             return redirect('/courses/')
         return render(request, self.template_name, context)
 
-class CourseUpdateView(View):
+class CourseUpdateView(CourseObjectMixin, View):
     template_name = "courses/course_update.html"
-    def get_object(self):
-        id = self.kwargs.get("id")
-        obj = None
-        if id is not None:
-            obj = get_object_or_404(Course, id=id)
-        return obj
-
     def get(self, request, *args, **kwargs):
         # GET method
         context = {}
@@ -64,7 +62,7 @@ class CourseUpdateView(View):
             context['form'] = form
         return render(request, self.template_name, context)
 
-class CourseCreateView(View):
+class CourseCreateView(CourseObjectMixin, View):
     template_name = "courses/course_create.html"
     def get(self, request, *args, **kwargs):
         # GET method
@@ -93,14 +91,12 @@ class CourseListView(View):
         context = {'object_list': self.get_queryset()}
         return render(request, self.template_name, context)
 
-class CourseView(View):
+class CourseView(CourseObjectMixin, View):
     template_name = "courses/course_detail.html"
     def get(self, request, id=None, *args, **kwargs):
         # GET method
-        context = {}
-        if id is not None:
-            obj = get_object_or_404(Course, id=id)
-            context['object'] = obj
+        context = {'object': self.get_object()}
+        
         return render(request, self.template_name, context)
 
     # def post(self, request, *args, **kwargs):

@@ -20,6 +20,7 @@ class CourseCreateView(View):
         context = {"form": form}
         if form.is_valid():
             form.save()
+            form = CourseModelForm()
         return render(request, self.template_name, context)
 
 

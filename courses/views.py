@@ -1,9 +1,27 @@
 from django.shortcuts import render, get_object_or_404
 from django.views import View
 
+from .forms import CourseModelForm
 from .models import Course
 
 # BASE VIEW Class = VIEW
+
+class CourseCreateView(View):
+    template_name = "courses/course_create.html"
+    def get(self, request, *args, **kwargs):
+        # GET method
+        form = CourseModelForm()
+        context = {"form": form}
+        return render(request, self.template_name, context)
+
+    def post(self, request, *args, **kwargs):
+        # POST method
+        form = CourseModelForm(request.POST)
+        context = {"form": form}
+        if form.is_valid():
+            form.save()
+        return render(request, self.template_name, context)
+
 
 class CourseListView(View):
     template_name = "courses/course_list.html"

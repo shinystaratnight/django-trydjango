@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 
 from django.views.generic import (
     CreateView,
@@ -19,5 +19,5 @@ class ArticleDetailView(DetailView):
     queryset = Article.objects.all()
 
     def get_object(self):
-        id_ = self.kwargs.get("id")
+        id_ = self.kwargs.get('id')
         return get_object_or_404(Article, id=id_)
